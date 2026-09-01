@@ -12,5 +12,6 @@
 
         public string Role { get; set; } = "User";
 
+        public List<Task> Tasks { get; set; } = new List<Task>();
     }
 }

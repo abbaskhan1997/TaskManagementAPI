@@ -1,13 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using TaskManagementAPI.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagementAPI.DTOs;
-using TaskManagementAPI.Models;
+using TaskManagementAPI.Services;
 
 namespace TaskManagementAPI.Controllers
 {
@@ -15,25 +8,21 @@ namespace TaskManagementAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public AuthController (ApplicationDbContext context,
-            IConfiguration configuration)
+        public AuthController (IAuthService authService)
         {
-            _context = context;
-            _configuration = configuration;
+            _authService = authService;
         }
 
         // Register request
         [HttpPost("register")]
-        public async Task<IActionResult> Register (User user)
+        public async Task<IActionResult> Register (RegisterRequest request)
         {
             try
             {
-                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+
+                await _authService.Register(request);
 
                 return Ok(new
                 {
@@ -50,82 +39,28 @@ namespace TaskManagementAPI.Controllers
             }
         }
 
-        // login Request
+        // Login request
         [HttpPost("login")]
         public async Task<IActionResult> Login (LoginRequest request)
         {
             try
             {
-                var user = await _context.Users
-             .FirstOrDefaultAsync(u => u.Email == request.Email);
-
-                if (user == null)
-                {
-                    return Unauthorized(new
-                    {
-                        message = "Invalid email or password"
-                    });
-                }
-
-                bool passwordValid = BCrypt.Net.BCrypt.Verify(
-                 request.Password,
-                  user.Password
-                     );
-
-                if (!passwordValid)
-                {
-                    return Unauthorized(new
-                    {
-                        message = "Invalid email or password"
-                    });
-                }
-
-                var claims = new[]
-{
-    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-    new Claim(ClaimTypes.Email, user.Email),
-    new Claim(ClaimTypes.Role, user.Role)
-};
-
-                var key = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)
-                );
-
-                var credentials = new SigningCredentials(
-                    key,
-                    SecurityAlgorithms.HmacSha256
-                );
-
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["Jwt:Issuer"],
-                    audience: _configuration["Jwt:Audience"],
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(
-                        double.Parse(_configuration["Jwt:ExpiryMinutes"]!)
-                    ),
-                    signingCredentials: credentials
-                );
-
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                var token = await _authService.Login(request);
 
                 return Ok(new
                 {
                     message = "Login successful",
-                    token = tokenString
+                    token = token
                 });
-
-                
             }
-
-
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return Unauthorized(new
                 {
-                    message = "An error occurred",
-                    error = ex.Message
+                    message = ex.Message
                 });
             }
         }
     }
 }
+

@@ -19,9 +19,12 @@ namespace TaskManagementAPI.Services
             return task;
         }
 
-        public async Task<List<TaskManagementAPI.Models.Task>> GetTasks ()
+
+        public async Task<List<TaskManagementAPI.Models.Task>> GetTasks (int userId)
         {
-            return await _context.Tasks.ToListAsync();
+            return await _context.Tasks
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
         }
 
         public async Task<TaskManagementAPI.Models.Task> GetTaskById (int id)
@@ -29,11 +32,19 @@ namespace TaskManagementAPI.Services
             return await _context.Tasks.FindAsync(id);
         }
 
-        public async Task<TaskManagementAPI.Models.Task> UpdateTask (TaskManagementAPI.Models.Task task)
+        public async Task<TaskManagementAPI.Models.Task> UpdateTask (
+    TaskManagementAPI.Models.Task existingTask,
+    TaskManagementAPI.Models.Task task)
         {
-            _context.Tasks.Update(task);
+            existingTask.Title = task.Title;
+            existingTask.Description = task.Description;
+            existingTask.Status = task.Status;
+            existingTask.Priority = task.Priority;
+            existingTask.DueDate = task.DueDate;
+
             await _context.SaveChangesAsync();
-            return task;
+
+            return existingTask;
         }
 
         public async Task DeleteTask (int id)

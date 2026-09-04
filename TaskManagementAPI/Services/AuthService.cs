@@ -19,6 +19,7 @@ namespace TaskManagementAPI.Services
             _configuration = configuration;
         }
 
+//Register
         public async System.Threading.Tasks.Task Register (RegisterRequest request)
         {
             var user = new TaskManagementAPI.Models.User
@@ -34,6 +35,7 @@ namespace TaskManagementAPI.Services
             await _context.SaveChangesAsync();
         }
 
+        //Login
         public async Task<string> Login (LoginRequest request)
         {
             var user = await _context.Users
@@ -57,6 +59,7 @@ namespace TaskManagementAPI.Services
             return GenerateJwtToken(user);
         }
 
+//Generate JWT Token
         private string GenerateJwtToken (TaskManagementAPI.Models.User user)
         {
             var claims = new[]

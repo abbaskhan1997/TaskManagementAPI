@@ -86,5 +86,31 @@ namespace TaskManagementAPI.Controllers
                 });
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser (int id)
+        {
+            try
+            {
+                var user = await _userService.GetUserById(id);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                await _userService.DeleteUser(id);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while deleting the user.",
+                    error = ex.Message
+                });
+            }
+        }
     }
 }

@@ -33,13 +33,21 @@ namespace TaskManagementAPI.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetTasks ()
+        public async Task<IActionResult> GetTasks (
+     string? search,
+     string? status,
+     string? priority)
         {
             var userId = int.Parse(User.FindFirst(
                 System.Security.Claims.ClaimTypes.NameIdentifier
             )!.Value);
 
-            var tasks = await _taskService.GetTasks(userId);
+            var tasks = await _taskService.GetTasks(
+                userId,
+                search,
+                status,
+                priority
+            );
 
             return Ok(tasks);
         }

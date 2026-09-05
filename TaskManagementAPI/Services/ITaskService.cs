@@ -4,8 +4,10 @@
     {
         Task<TaskManagementAPI.Models.Task> CreateTask (TaskManagementAPI.Models.Task task);
 
-        //Task<List<TaskManagementAPI.Models.Task>> GetTasks ();
-        Task<List<TaskManagementAPI.Models.Task>> GetTasks (int userId);
+       
+        Task<List<TaskManagementAPI.Models.Task>> GetTasks (int userId, string? search, string? status, string? priority);
+
+
 
         Task<TaskManagementAPI.Models.Task?> GetTaskById (int id);
 

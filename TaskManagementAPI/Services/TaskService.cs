@@ -20,11 +20,28 @@ namespace TaskManagementAPI.Services
         }
 
 
-        public async Task<List<TaskManagementAPI.Models.Task>> GetTasks (int userId)
+        public async Task<List<TaskManagementAPI.Models.Task>> GetTasks (int userId, string? search, string? status, string? priority)
         {
-            return await _context.Tasks
-                .Where(t => t.UserId == userId)
-                .ToListAsync();
+            var query = _context.Tasks
+                .Where(t => t.UserId == userId);
+         
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(t =>
+                    t.Title.Contains(search) ||
+                    t.Description.Contains(search));
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(t => t.Status == status);
+            }
+            if (!string.IsNullOrEmpty(priority))
+            {
+                query = query.Where(t => t.Priority == priority);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<TaskManagementAPI.Models.Task> GetTaskById (int id)

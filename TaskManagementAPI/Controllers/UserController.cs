@@ -17,9 +17,8 @@ namespace TaskManagementAPI.Controllers
             _userService = userService;
         }
 
-        
-
-public async Task<IActionResult> GetUsers ()
+        [HttpGet]        
+        public async Task<IActionResult> GetUsers ()
         {
             try
             {
@@ -58,6 +57,31 @@ public async Task<IActionResult> GetUsers ()
                 return StatusCode(500, new
                 {
                     message = "An error occurred while getting the user.",
+                    error = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser (int id, TaskManagementAPI.DTOs.UpdateUserRequest user)
+        {
+            try
+            {
+                var updatedUser = await _userService.UpdateUser(id, user);
+
+                if (updatedUser == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while updating the user.",
                     error = ex.Message
                 });
             }

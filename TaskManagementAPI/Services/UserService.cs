@@ -23,5 +23,23 @@ namespace TaskManagementAPI.Services
         {
             return await _context.Users.FindAsync(id);
         }
+
+        public async Task<TaskManagementAPI.Models.User?> UpdateUser (int id, TaskManagementAPI.DTOs.UpdateUserRequest user)
+        {
+            var existingUser = await _context.Users.FindAsync(id);
+
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            existingUser.Name = user.Name;
+            existingUser.Email = user.Email;
+            existingUser.Role = user.Role;
+
+            await _context.SaveChangesAsync();
+
+            return existingUser;
+        }
     }
 }

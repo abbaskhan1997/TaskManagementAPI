@@ -3,5 +3,7 @@
     public interface IUserService
     {
         Task<List<TaskManagementAPI.Models.User>> GetUsers ();
+
+        Task<TaskManagementAPI.Models.User?> GetUserById (int id);
     }
 }

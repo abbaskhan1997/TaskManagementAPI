@@ -18,5 +18,10 @@ namespace TaskManagementAPI.Services
 
            
         }
+
+        public async Task<TaskManagementAPI.Models.User?> GetUserById (int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
     }
 }

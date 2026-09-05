@@ -20,20 +20,13 @@ namespace TaskManagementAPI.Controllers
         [HttpGet]        
         public async Task<IActionResult> GetUsers ()
         {
-            try
-            {
+            
                 var users = await _userService.GetUsers();
 
                 return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred while getting users.",
-                    error = ex.Message
-                });
-            }
+            
+           
+            
         }
 
 
@@ -41,8 +34,7 @@ namespace TaskManagementAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById (int id)
         {
-            try
-            {
+           
                 var user = await _userService.GetUserById(id);
 
                 if (user == null)
@@ -51,23 +43,16 @@ namespace TaskManagementAPI.Controllers
                 }
 
                 return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred while getting the user.",
-                    error = ex.Message
-                });
-            }
+            
+           
+            
         }
 
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser (int id, TaskManagementAPI.DTOs.UpdateUserRequest user)
         {
-            try
-            {
+            
                 var updatedUser = await _userService.UpdateUser(id, user);
 
                 if (updatedUser == null)
@@ -76,22 +61,15 @@ namespace TaskManagementAPI.Controllers
                 }
 
                 return Ok(updatedUser);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred while updating the user.",
-                    error = ex.Message
-                });
-            }
+            
+           
+            
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser (int id)
         {
-            try
-            {
+            
                 var user = await _userService.GetUserById(id);
 
                 if (user == null)
@@ -103,14 +81,8 @@ namespace TaskManagementAPI.Controllers
 
                 return NoContent();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred while deleting the user.",
-                    error = ex.Message
-                });
-            }
-        }
+           
+            
+        
     }
 }

@@ -19,8 +19,7 @@ namespace TaskManagementAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register (RegisterRequest request)
         {
-            try
-            {
+            
 
                 await _authService.Register(request);
 
@@ -28,23 +27,16 @@ namespace TaskManagementAPI.Controllers
                 {
                     message = "User registered successfully"
                 });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred",
-                    error = ex.Message
-                });
-            }
         }
+            
+            
+        
 
         // Login request
         [HttpPost("login")]
         public async Task<IActionResult> Login (LoginRequest request)
         {
-            try
-            {
+           
                 var token = await _authService.Login(request);
 
                 return Ok(new
@@ -52,14 +44,8 @@ namespace TaskManagementAPI.Controllers
                     message = "Login successful",
                     token = token
                 });
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(new
-                {
-                    message = ex.Message
-                });
-            }
+            
+            
         }
     }
 }

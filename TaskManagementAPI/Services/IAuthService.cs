@@ -6,6 +6,6 @@ namespace TaskManagementAPI.Services
     {
         System.Threading.Tasks.Task Register (RegisterRequest request);
 
-        Task<string> Login (LoginRequest request);
+        Task<string?> Login (LoginRequest request);
     }
 }

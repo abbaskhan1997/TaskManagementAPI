@@ -35,15 +35,16 @@ namespace TaskManagementAPI.Services
             await _context.SaveChangesAsync();
         }
 
-        //Login
-        public async Task<string> Login (LoginRequest request)
+        
+//Login
+public async Task<string?> Login (LoginRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
             {
-                throw new Exception("Invalid email or password");
+                return null;
             }
 
             bool passwordValid = BCrypt.Net.BCrypt.Verify(
@@ -53,13 +54,15 @@ namespace TaskManagementAPI.Services
 
             if (!passwordValid)
             {
-                throw new Exception("Invalid email or password");
+                return null;
             }
 
             return GenerateJwtToken(user);
         }
 
-//Generate JWT Token
+
+
+        //Generate JWT Token
         private string GenerateJwtToken (TaskManagementAPI.Models.User user)
         {
             var claims = new[]

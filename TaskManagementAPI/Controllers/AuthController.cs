@@ -32,21 +32,29 @@ namespace TaskManagementAPI.Controllers
             
         
 
-        // Login request
-        [HttpPost("login")]
-        public async Task<IActionResult> Login (LoginRequest request)
+       
+// Login request
+[HttpPost("login")]
+public async Task<IActionResult> Login (LoginRequest request)
         {
-           
-                var token = await _authService.Login(request);
+            var token = await _authService.Login(request);
 
-                return Ok(new
+            if (token == null)
+            {
+                return Unauthorized(new
                 {
-                    message = "Login successful",
-                    token = token
+                    message = "Invalid email or password"
                 });
-            
-            
-        }
+            }
+
+            return Ok(new
+            {
+                message = "Login successful",
+                token = token
+            });
+      }
+
+
     }
 }
 

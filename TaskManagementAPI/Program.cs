@@ -37,7 +37,15 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -77,7 +85,10 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+
 app.UseMiddleware<TaskManagementAPI.Middleware.ExceptionMiddleware>();
+
+app.UseCors("AllowAngular");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -52,6 +52,20 @@ namespace TaskManagementAPI.Controllers
             return Ok(tasks);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetTasksByUser (int userId)
+        {
+            var tasks = await _taskService.GetTasks(
+                userId,
+                null,
+                null,
+                null
+            );
+
+            return Ok(tasks);
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById (int id)

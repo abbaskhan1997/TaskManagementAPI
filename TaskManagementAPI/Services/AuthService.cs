@@ -27,7 +27,8 @@ namespace TaskManagementAPI.Services
                 Name = request.Name,
                 Email = request.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = request.Role
+                //Role = request.Role
+                Role= "User"
             };
 
             _context.Users.Add(user);
